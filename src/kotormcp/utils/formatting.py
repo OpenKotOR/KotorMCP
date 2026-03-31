@@ -7,7 +7,7 @@ from typing import Any
 
 from mcp import types
 
-# Recommended max response size for tool output (plan §2.4); truncate with continuation hint when exceeded
+# Recommended max response size for tool output; truncate with continuation hint when exceeded
 MAX_RESPONSE_CHARS = 25_000
 
 
