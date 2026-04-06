@@ -7,7 +7,6 @@ from io import BytesIO
 from typing import Any
 
 from mcp import types
-
 from pykotor.extract.installation import SearchLocation
 from pykotor.resource.formats.gff.gff_auto import read_gff
 from pykotor.resource.type import ResourceType
@@ -49,7 +48,13 @@ def get_tools() -> list[types.Tool]:
                 "properties": {
                     "game": {"type": "string", "description": "Game alias: k1 or k2"},
                     "module_root": {"type": "string", "description": "Module root name"},
-                    "limit": {"type": "integer", "minimum": 1, "maximum": 500, "default": 50, "description": "Max results per page"},
+                    "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 500,
+                        "default": 50,
+                        "description": "Max results per page",
+                    },
                     "offset": {"type": "integer", "minimum": 0, "default": 0, "description": "Skip first N results"},
                 },
                 "required": ["game", "module_root"],
@@ -101,7 +106,8 @@ async def handle_describe_module(arguments: dict[str, Any]) -> types.CallToolRes
     wok_res = installation.resource(root, ResourceType.WOK, order=order, module_root=root)
     summary: dict[str, Any] = {
         "module_root": root,
-        "area_name": installation.module_name(next(iter(_module_root_to_filenames(installation, root)), root + ".rim")) or root,
+        "area_name": installation.module_name(next(iter(_module_root_to_filenames(installation, root)), root + ".rim"))
+        or root,
         "are": None,
         "lyt": None,
         "wok_list": [],
@@ -151,24 +157,27 @@ async def handle_module_resources(arguments: dict[str, Any]) -> types.CallToolRe
     all_resources: list[Any] = []
     for f in files:
         for res in installation.module_resources(f):
-            all_resources.append({
-                "resref": res.resname(),
-                "type": res.restype().name,
-                "extension": res.restype().extension,
-                "size": res.size(),
-                "source_file": f,
-            })
+            all_resources.append(
+                {
+                    "resref": res.resname(),
+                    "type": res.restype().name,
+                    "extension": res.restype().extension,
+                    "size": res.size(),
+                    "source_file": f,
+                }
+            )
     offset = inp.offset
     limit = inp.limit
     items = all_resources[offset : offset + limit]
     has_more = len(all_resources) > offset + limit
     next_offset = offset + len(items) if has_more else None
-    return json_content({
-        "count": len(items),
-        "total": len(all_resources),
-        "offset": offset,
-        "items": items,
-        "has_more": has_more,
-        "next_offset": next_offset,
-    })
-
+    return json_content(
+        {
+            "count": len(items),
+            "total": len(all_resources),
+            "offset": offset,
+            "items": items,
+            "has_more": has_more,
+            "next_offset": next_offset,
+        }
+    )

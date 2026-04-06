@@ -6,7 +6,6 @@ from io import BytesIO
 from typing import Any
 
 from mcp import types
-
 from pykotor.extract.installation import SearchLocation
 from pykotor.resource.formats.bwm import read_bwm
 from pykotor.resource.type import ResourceType
@@ -26,7 +25,11 @@ def get_tools() -> list[types.Tool]:
                 "properties": {
                     "game": {"type": "string", "description": "Game alias: k1 or k2"},
                     "resref": {"type": "string", "description": "Walkmesh resref (e.g. 203tell for 203tell.wok)"},
-                    "use_color": {"type": "boolean", "default": False, "description": "If true, include ANSI color codes (e.g. for terminal); default false for plain text in MCP."},
+                    "use_color": {
+                        "type": "boolean",
+                        "default": False,
+                        "description": "If true, include ANSI color codes (e.g. for terminal); default false for plain text in MCP.",
+                    },
                 },
                 "required": ["game", "resref"],
             },

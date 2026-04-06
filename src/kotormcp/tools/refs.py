@@ -62,12 +62,26 @@ def get_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "game": {"type": "string", "description": "Game alias: k1 or k2"},
-                    "value": {"type": "string", "description": "Script resref, tag, conversation resref, or resref to search for"},
-                    "reference_kind": {"type": "string", "enum": ["script", "tag", "conversation", "resref"], "default": "resref", "description": "Kind of reference"},
+                    "value": {
+                        "type": "string",
+                        "description": "Script resref, tag, conversation resref, or resref to search for",
+                    },
+                    "reference_kind": {
+                        "type": "string",
+                        "enum": ["script", "tag", "conversation", "resref"],
+                        "default": "resref",
+                        "description": "Kind of reference",
+                    },
                     "path": {"type": "string", "description": "Optional installation path override"},
                     "module_root": {"type": "string", "description": "Limit search to this module"},
                     "partial_match": {"type": "boolean", "default": False, "description": "Allow substring match"},
-                    "limit": {"type": "integer", "minimum": 1, "maximum": 500, "default": 100, "description": "Max results"},
+                    "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 500,
+                        "default": 100,
+                        "description": "Max results",
+                    },
                     "offset": {"type": "integer", "minimum": 0, "default": 0, "description": "Pagination offset"},
                 },
                 "required": ["game", "value"],
@@ -82,7 +96,13 @@ def get_tools() -> list[types.Tool]:
                     "game": {"type": "string", "description": "Game alias: k1 or k2"},
                     "strref": {"type": "integer", "minimum": 0, "description": "TLK string reference ID"},
                     "path": {"type": "string", "description": "Optional installation path override"},
-                    "limit": {"type": "integer", "minimum": 1, "maximum": 500, "default": 100, "description": "Max results"},
+                    "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 500,
+                        "default": 100,
+                        "description": "Max results",
+                    },
                     "offset": {"type": "integer", "minimum": 0, "default": 0, "description": "Pagination offset"},
                 },
                 "required": ["game", "strref"],
@@ -183,13 +203,15 @@ async def handle_find_referrers(arguments: dict[str, Any]) -> types.CallToolResu
         }
         for r in page
     ]
-    return json_content({
-        "count": len(items),
-        "offset": start,
-        "total": total,
-        "has_more": end < total,
-        "items": items,
-    })
+    return json_content(
+        {
+            "count": len(items),
+            "offset": start,
+            "total": total,
+            "has_more": end < total,
+            "items": items,
+        }
+    )
 
 
 async def handle_find_strref_referrers(arguments: dict[str, Any]) -> types.CallToolResult:
@@ -222,13 +244,15 @@ async def handle_find_strref_referrers(arguments: dict[str, Any]) -> types.CallT
         }
         for r in page
     ]
-    return json_content({
-        "count": len(items),
-        "offset": start,
-        "total": total,
-        "has_more": end < total,
-        "items": items,
-    })
+    return json_content(
+        {
+            "count": len(items),
+            "offset": start,
+            "total": total,
+            "has_more": end < total,
+            "items": items,
+        }
+    )
 
 
 def _dlg_summary(gff: Any) -> dict[str, Any]:

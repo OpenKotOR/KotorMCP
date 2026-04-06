@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Any
 
 from mcp import types
-
 from pykotor.common.misc import Game
 from pykotor.tools.validation import get_installation_summary
 

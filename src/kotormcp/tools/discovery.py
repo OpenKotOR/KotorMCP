@@ -7,7 +7,6 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any
 
 from mcp import types
-
 from pykotor.extract.installation import Installation, SearchLocation
 from pykotor.resource.formats.gff.gff_auto import read_gff
 from pykotor.resource.formats.tlk.tlk_auto import read_tlk
@@ -216,7 +215,12 @@ def get_tools() -> list[types.Tool]:
                     },
                     "resrefQuery": {"type": "string", "description": "Case-insensitive substring filter for resrefs."},
                     "limit": {"type": "integer", "minimum": 1, "maximum": 500, "default": 50},
-                    "offset": {"type": "integer", "minimum": 0, "default": 0, "description": "Skip first N results (pagination)"},
+                    "offset": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "default": 0,
+                        "description": "Skip first N results (pagination)",
+                    },
                 },
             },
         ),
@@ -245,9 +249,20 @@ def get_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "game": {"type": "string", "description": "k1 or k2"},
-                    "query": {"type": "string", "description": "Resource name with optional extension (e.g. 203tell.wok) or glob (e.g. 203tel*)"},
-                    "order": {"type": "array", "items": {"type": "string"}, "description": "Optional SearchLocation order (OVERRIDE, MODULES, CHITIN, ...)"},
-                    "all_locations": {"type": "boolean", "description": "If true, return all locations with priority; if false, only selected per resource", "default": True},
+                    "query": {
+                        "type": "string",
+                        "description": "Resource name with optional extension (e.g. 203tell.wok) or glob (e.g. 203tel*)",
+                    },
+                    "order": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Optional SearchLocation order (OVERRIDE, MODULES, CHITIN, ...)",
+                    },
+                    "all_locations": {
+                        "type": "boolean",
+                        "description": "If true, return all locations with priority; if false, only selected per resource",
+                        "default": True,
+                    },
                 },
                 "required": ["game", "query"],
             },
@@ -260,8 +275,18 @@ def get_tools() -> list[types.Tool]:
                 "properties": {
                     "game": {"type": "string"},
                     "pattern": {"type": "string", "description": "Regex pattern to match resref"},
-                    "location": {"type": "string", "default": "all", "description": "Filter by location (override, modules, core, etc.)"},
-                    "limit": {"type": "integer", "minimum": 1, "maximum": 500, "default": 50, "description": "Max results per page"},
+                    "location": {
+                        "type": "string",
+                        "default": "all",
+                        "description": "Filter by location (override, modules, core, etc.)",
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 500,
+                        "default": 50,
+                        "description": "Max results per page",
+                    },
                     "offset": {"type": "integer", "minimum": 0, "default": 0, "description": "Skip first N results"},
                 },
                 "required": ["game", "pattern"],
@@ -299,13 +324,15 @@ async def handle_list_resources(arguments: dict[str, Any]) -> types.CallToolResu
             break
     has_more = len(results) == limit
     next_offset = (offset + len(results)) if has_more else None
-    return json_content({
-        "count": len(results),
-        "offset": offset,
-        "items": results,
-        "has_more": has_more,
-        "next_offset": next_offset,
-    })
+    return json_content(
+        {
+            "count": len(results),
+            "offset": offset,
+            "items": results,
+            "has_more": has_more,
+            "next_offset": next_offset,
+        }
+    )
 
 
 async def handle_describe_resource(arguments: dict[str, Any]) -> types.CallToolResult:
@@ -319,7 +346,8 @@ async def handle_describe_resource(arguments: dict[str, Any]) -> types.CallToolR
     resref = inp.resref
     restype = inp.restype
     order = _parse_order_labels(
-        inp.order or [
+        inp.order
+        or [
             SearchLocation.OVERRIDE.name,
             SearchLocation.CUSTOM_FOLDERS.name,
             SearchLocation.MODULES.name,
@@ -416,11 +444,13 @@ async def handle_search_resources(arguments: dict[str, Any]) -> types.CallToolRe
             break
     has_more = len(items) == limit
     next_offset = (offset + len(items)) if has_more else None
-    return json_content({
-        "total": len(items),
-        "count": len(items),
-        "offset": offset,
-        "items": items,
-        "has_more": has_more,
-        "next_offset": next_offset,
-    })
+    return json_content(
+        {
+            "total": len(items),
+            "count": len(items),
+            "offset": offset,
+            "items": items,
+            "has_more": has_more,
+            "next_offset": next_offset,
+        }
+    )

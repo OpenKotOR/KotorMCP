@@ -52,15 +52,60 @@ async def list_resources() -> list[dict[str, Any]]:
     Returns static template URIs; clients request actual content via read_resource.
     """
     templates = [
-        {"uri": "kotor://k1/resource/{resref}.{ext}", "name": "K1 Resource", "description": "Resolve resource by resref.ext (resolution order)", "mimeType": "application/octet-stream"},
-        {"uri": "kotor://k2/resource/{resref}.{ext}", "name": "K2 Resource", "description": "Resolve resource by resref.ext (resolution order)", "mimeType": "application/octet-stream"},
-        {"uri": "kotor://k1/2da/{table_name}", "name": "K1 2DA Table", "description": "2DA table as JSON", "mimeType": "application/json"},
-        {"uri": "kotor://k2/2da/{table_name}", "name": "K2 2DA Table", "description": "2DA table as JSON", "mimeType": "application/json"},
-        {"uri": "kotor://k1/tlk/{strref}", "name": "K1 TLK String", "description": "TLK string by strref", "mimeType": "text/plain"},
-        {"uri": "kotor://k2/tlk/{strref}", "name": "K2 TLK String", "description": "TLK string by strref", "mimeType": "text/plain"},
-        {"uri": "kotor://k1/walkmesh-diagram/{resref}.wok", "name": "K1 Walkmesh validation diagram", "description": "Text validation diagram (perimeter, transitions) for area walkmesh", "mimeType": "text/plain"},
-        {"uri": "kotor://k2/walkmesh-diagram/{resref}.wok", "name": "K2 Walkmesh validation diagram", "description": "Text validation diagram (perimeter, transitions) for area walkmesh", "mimeType": "text/plain"},
-        {"uri": "kotor://docs/capabilities", "name": "KotorMCP capabilities", "description": "Resolution order, tool index, and when to use each tool (agent onboarding)", "mimeType": "text/markdown"},
+        {
+            "uri": "kotor://k1/resource/{resref}.{ext}",
+            "name": "K1 Resource",
+            "description": "Resolve resource by resref.ext (resolution order)",
+            "mimeType": "application/octet-stream",
+        },
+        {
+            "uri": "kotor://k2/resource/{resref}.{ext}",
+            "name": "K2 Resource",
+            "description": "Resolve resource by resref.ext (resolution order)",
+            "mimeType": "application/octet-stream",
+        },
+        {
+            "uri": "kotor://k1/2da/{table_name}",
+            "name": "K1 2DA Table",
+            "description": "2DA table as JSON",
+            "mimeType": "application/json",
+        },
+        {
+            "uri": "kotor://k2/2da/{table_name}",
+            "name": "K2 2DA Table",
+            "description": "2DA table as JSON",
+            "mimeType": "application/json",
+        },
+        {
+            "uri": "kotor://k1/tlk/{strref}",
+            "name": "K1 TLK String",
+            "description": "TLK string by strref",
+            "mimeType": "text/plain",
+        },
+        {
+            "uri": "kotor://k2/tlk/{strref}",
+            "name": "K2 TLK String",
+            "description": "TLK string by strref",
+            "mimeType": "text/plain",
+        },
+        {
+            "uri": "kotor://k1/walkmesh-diagram/{resref}.wok",
+            "name": "K1 Walkmesh validation diagram",
+            "description": "Text validation diagram (perimeter, transitions) for area walkmesh",
+            "mimeType": "text/plain",
+        },
+        {
+            "uri": "kotor://k2/walkmesh-diagram/{resref}.wok",
+            "name": "K2 Walkmesh validation diagram",
+            "description": "Text validation diagram (perimeter, transitions) for area walkmesh",
+            "mimeType": "text/plain",
+        },
+        {
+            "uri": "kotor://docs/capabilities",
+            "name": "KotorMCP capabilities",
+            "description": "Resolution order, tool index, and when to use each tool (agent onboarding)",
+            "mimeType": "text/markdown",
+        },
     ]
     return templates
 
@@ -139,7 +184,11 @@ async def read_resource(uri: str) -> dict[str, Any]:  # noqa: PLR0915
         if result is None:
             msg = f"Resource not found: {path}"
             raise ValueError(msg)
-        return {"uri": uri, "mimeType": "application/octet-stream", "blob": base64.b64encode(result.data).decode("ascii")}
+        return {
+            "uri": uri,
+            "mimeType": "application/octet-stream",
+            "blob": base64.b64encode(result.data).decode("ascii"),
+        }
     if resource_type == "2da":
         from io import BytesIO  # noqa: PLC0415
 

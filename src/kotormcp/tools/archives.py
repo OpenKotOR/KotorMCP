@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Any
 
 from mcp import types
-
 from pykotor.extract.installation import SearchLocation
 from pykotor.resource.type import ResourceType
 from pykotor.tools.archives import list_bif, list_erf, list_key, list_rim
@@ -29,7 +28,13 @@ def get_tools() -> list[types.Tool]:
                 "properties": {
                     "file_path": {"type": "string", "description": "Path to archive file"},
                     "key_file": {"type": "string", "description": "Path to KEY file (for BIF listing)"},
-                    "limit": {"type": "integer", "minimum": 1, "maximum": 500, "default": 50, "description": "Max results per page"},
+                    "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 500,
+                        "default": 50,
+                        "description": "Max results per page",
+                    },
                     "offset": {"type": "integer", "minimum": 0, "default": 0, "description": "Skip first N results"},
                 },
                 "required": ["file_path"],
@@ -45,7 +50,10 @@ def get_tools() -> list[types.Tool]:
                     "resref": {"type": "string", "description": "Resource reference name"},
                     "restype": {"type": "string", "description": "Resource type (extension or name)"},
                     "output_path": {"type": "string", "description": "Output file or directory path (validated)"},
-                    "source": {"type": "string", "description": "Optional: extract only from this location (OVERRIDE, CHITIN, MODULES, etc.). Omit for first match in canonical order"},
+                    "source": {
+                        "type": "string",
+                        "description": "Optional: extract only from this location (OVERRIDE, CHITIN, MODULES, etc.). Omit for first match in canonical order",
+                    },
                 },
                 "required": ["game", "resref", "restype", "output_path"],
             },
@@ -70,13 +78,15 @@ async def handle_list_archive(arguments: dict[str, Any]) -> types.CallToolResult
     if suffix == ".key":
         bif_files, resources = list_key(path)
         for resref, restype_ext, bif_index, res_index in resources:
-            items.append({
-                "resref": resref,
-                "type": restype_ext,
-                "bif_index": bif_index,
-                "res_index": res_index,
-                "bif_file": bif_files[bif_index] if bif_index < len(bif_files) else None,
-            })
+            items.append(
+                {
+                    "resref": resref,
+                    "type": restype_ext,
+                    "bif_index": bif_index,
+                    "res_index": res_index,
+                    "bif_file": bif_files[bif_index] if bif_index < len(bif_files) else None,
+                }
+            )
     elif suffix == ".bif":
         key_path = Path(inp.key_file) if inp.key_file else path.parent / "chitin.key"
         for ar in list_bif(path, key_path=key_path if key_path.exists() else None):
@@ -95,14 +105,16 @@ async def handle_list_archive(arguments: dict[str, Any]) -> types.CallToolResult
     page = items[offset : offset + limit]
     has_more = total > offset + limit
     next_offset = offset + len(page) if has_more else None
-    return json_content({
-        "total": total,
-        "count": len(page),
-        "offset": offset,
-        "items": page,
-        "has_more": has_more,
-        "next_offset": next_offset,
-    })
+    return json_content(
+        {
+            "total": total,
+            "count": len(page),
+            "offset": offset,
+            "items": page,
+            "has_more": has_more,
+            "next_offset": next_offset,
+        }
+    )
 
 
 async def handle_extract_resource(arguments: dict[str, Any]) -> types.CallToolResult:
@@ -131,7 +143,11 @@ async def handle_extract_resource(arguments: dict[str, Any]) -> types.CallToolRe
         )
     out_path = Path(inp.output_path)
     if out_path.suffix.lower() != f".{restype.extension}":
-        out_path = out_path / f"{inp.resref}.{restype.extension}" if out_path.is_dir() else out_path.with_suffix(f".{restype.extension}")
+        out_path = (
+            out_path / f"{inp.resref}.{restype.extension}"
+            if out_path.is_dir()
+            else out_path.with_suffix(f".{restype.extension}")
+        )
     try:
         out_path = resolve_and_validate_under_base(out_path, get_extract_base(), allow_nonexistent=True)
     except ValueError as e:
@@ -139,4 +155,3 @@ async def handle_extract_resource(arguments: dict[str, Any]) -> types.CallToolRe
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_bytes(result.data)
     return json_content({"status": "ok", "path": str(out_path), "bytes": len(result.data)})
-

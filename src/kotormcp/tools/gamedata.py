@@ -21,7 +21,9 @@ if TYPE_CHECKING:
 
 def _journal_entries(installation: Installation) -> list[dict[str, Any]]:
     """Parse global.jrl and extract plot entries (structure documented in xoreos journal.cpp)."""
-    resource = installation.resource("global", ResourceType.JRL, order=[SearchLocation.OVERRIDE, SearchLocation.MODULES, SearchLocation.CHITIN])
+    resource = installation.resource(
+        "global", ResourceType.JRL, order=[SearchLocation.OVERRIDE, SearchLocation.MODULES, SearchLocation.CHITIN]
+    )
     if resource is None:
         msg = "Unable to locate global.jrl in the current installation."
         raise ValueError(msg)
@@ -81,7 +83,10 @@ def get_tools() -> list[types.Tool]:
             description="Use when you need to resolve a strref to display text from dialog.tlk. Read-only.",
             inputSchema={
                 "type": "object",
-                "properties": {"game": {"type": "string", "description": "Game alias: k1 or k2"}, "strref": {"type": "integer", "description": "TLK string reference ID"}},
+                "properties": {
+                    "game": {"type": "string", "description": "Game alias: k1 or k2"},
+                    "strref": {"type": "integer", "description": "TLK string reference ID"},
+                },
                 "required": ["game", "strref"],
             },
         ),
@@ -126,7 +131,9 @@ async def handle_lookup_2da(arguments: dict[str, Any]) -> types.CallToolResult:
                 matches.append({"row_index": i, inp.column: val})
                 if len(matches) >= 50:
                     break
-        return json_content({"table": inp.table_name, "column": inp.column, "value_search": inp.value_search, "matches": matches})
+        return json_content(
+            {"table": inp.table_name, "column": inp.column, "value_search": inp.value_search, "matches": matches}
+        )
     return json_content({"table": inp.table_name, "columns": table.get_headers(), "row_count": table.get_height()})
 
 

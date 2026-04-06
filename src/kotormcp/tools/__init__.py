@@ -6,7 +6,18 @@ from typing import Any
 
 from mcp import types
 
-from kotormcp.tools import archives, conversion, discovery, gamedata, installation, modules, refs, scripts, walkmesh, writing
+from kotormcp.tools import (
+    archives,
+    conversion,
+    discovery,
+    gamedata,
+    installation,
+    modules,
+    refs,
+    scripts,
+    walkmesh,
+    writing,
+)
 
 
 def get_all_tools() -> list[types.Tool]:

@@ -6,7 +6,6 @@ from io import BytesIO
 from typing import Any
 
 from mcp import types
-
 from pykotor.extract.installation import SearchLocation
 from pykotor.resource.formats.gff.gff_auto import read_gff
 from pykotor.resource.formats.gff.gff_data import GFFList, GFFStruct
@@ -73,9 +72,18 @@ def get_tools() -> list[types.Tool]:
                     "game": {"type": "string", "description": "Game alias: k1 or k2"},
                     "resref": {"type": "string", "description": "Resource reference name"},
                     "restype": {"type": "string", "description": "Resource type (e.g. DLG, UTC)"},
-                    "field_paths": {"type": "array", "items": {"type": "string"}, "description": "Optional field paths to include"},
+                    "field_paths": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Optional field paths to include",
+                    },
                     "max_depth": {"type": "integer", "minimum": 1, "maximum": 20, "description": "Max nesting depth"},
-                    "max_fields": {"type": "integer", "minimum": 1, "maximum": 1000, "description": "Max fields to return"},
+                    "max_fields": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1000,
+                        "description": "Max fields to return",
+                    },
                 },
                 "required": ["game", "resref", "restype"],
             },
@@ -105,7 +113,13 @@ def get_tools() -> list[types.Tool]:
                     "strref_start": {"type": "integer", "minimum": 0, "description": "Start strref"},
                     "strref_end": {"type": "integer", "minimum": 0, "description": "End strref"},
                     "text_search": {"type": "string", "description": "Substring search in text"},
-                    "limit": {"type": "integer", "minimum": 1, "maximum": 500, "default": 100, "description": "Max entries"},
+                    "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 500,
+                        "default": 100,
+                        "description": "Max entries",
+                    },
                 },
                 "required": ["game"],
             },
@@ -136,12 +150,14 @@ async def handle_read_gff(arguments: dict[str, Any]) -> types.CallToolResult:
         depth=0,
         field_count=field_count,
     )
-    return json_content({
-        "resref": inp.resref,
-        "restype": restype.name,
-        "root": tree,
-        "truncated": field_count[0] >= (inp.max_fields or 0) if inp.max_fields else False,
-    })
+    return json_content(
+        {
+            "resref": inp.resref,
+            "restype": restype.name,
+            "root": tree,
+            "truncated": field_count[0] >= (inp.max_fields or 0) if inp.max_fields else False,
+        }
+    )
 
 
 async def handle_read_2da(arguments: dict[str, Any]) -> types.CallToolResult:
@@ -168,13 +184,15 @@ async def handle_read_2da(arguments: dict[str, Any]) -> types.CallToolResult:
         for h in headers:
             row_dict[h] = table.get_cell_safe(i, h, "")
         rows.append(row_dict)
-    return json_content({
-        "resref": inp.resref,
-        "columns": headers,
-        "row_count": len(rows),
-        "row_start": row_start,
-        "rows": rows,
-    })
+    return json_content(
+        {
+            "resref": inp.resref,
+            "columns": headers,
+            "row_count": len(rows),
+            "row_start": row_start,
+            "rows": rows,
+        }
+    )
 
 
 async def handle_read_tlk(arguments: dict[str, Any]) -> types.CallToolResult:
@@ -205,10 +223,11 @@ async def handle_read_tlk(arguments: dict[str, Any]) -> types.CallToolResult:
             if strref < len(tlk.entries):
                 entry = tlk.entries[strref]
                 entries_out.append({"strref": strref, "text": entry.text[:500], "sound": str(entry.voiceover)})
-    return json_content({
-        "language": tlk.language.name,
-        "total_entries": len(tlk.entries),
-        "count": len(entries_out),
-        "entries": entries_out,
-    })
-
+    return json_content(
+        {
+            "language": tlk.language.name,
+            "total_entries": len(tlk.entries),
+            "count": len(entries_out),
+            "entries": entries_out,
+        }
+    )

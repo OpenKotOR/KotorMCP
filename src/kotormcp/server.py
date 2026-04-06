@@ -36,7 +36,6 @@ from mcp.server.models import InitializationOptions
 from kotormcp import mcp_resources
 from kotormcp.tools import get_all_tools, handle_tool
 
-
 SERVER = Server("KotorMCP")
 
 
