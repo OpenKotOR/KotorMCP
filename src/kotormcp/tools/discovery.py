@@ -24,25 +24,7 @@ if TYPE_CHECKING:
 
     from pykotor.extract.file import FileResource, ResourceResult
 
-GFF_HEAVY_TYPES = {
-    ResourceType.GFF,
-    ResourceType.BIC,
-    ResourceType.UTC,
-    ResourceType.UTD,
-    ResourceType.UTE,
-    ResourceType.UTI,
-    ResourceType.UTP,
-    ResourceType.UTS,
-    ResourceType.UTM,
-    ResourceType.UTT,
-    ResourceType.UTW,
-    ResourceType.ARE,
-    ResourceType.GIT,
-    ResourceType.IFO,
-    ResourceType.DLG,
-    ResourceType.FAC,
-    ResourceType.JRL,
-}
+GFF_HEAVY_TYPES: frozenset[ResourceType] = frozenset(rt for rt in ResourceType if rt.is_gff())
 
 
 def _parse_resource_types(raw: Iterable[str] | None) -> set[ResourceType]:

@@ -55,7 +55,7 @@ kotormcp = "kotormcp.server:main"
 
 [project.urls]
 Homepage = "https://github.com/th3w1zard1/KotorMCP"
-Documentation = "https://github.com/OldRepublicDevs/PyKotor/wiki"
+Documentation = "https://github.com/OpenKotOR/PyKotor/wiki"
 Repository = "https://github.com/th3w1zard1/KotorMCP.git"
 Issues = "https://github.com/th3w1zard1/KotorMCP/issues"
 Changelog = "https://github.com/th3w1zard1/KotorMCP/releases"
@@ -152,7 +152,7 @@ kotormcp = "kotormcp.server:main"
 
 [tool.poetry.urls]
 Homepage = "https://github.com/th3w1zard1/KotorMCP"
-Documentation = "https://github.com/OldRepublicDevs/PyKotor/wiki"
+Documentation = "https://github.com/OpenKotOR/PyKotor/wiki"
 Repository = "https://github.com/th3w1zard1/KotorMCP.git"
 Issues = "https://github.com/th3w1zard1/KotorMCP/issues"
 Changelog = "https://github.com/th3w1zard1/KotorMCP/releases"
