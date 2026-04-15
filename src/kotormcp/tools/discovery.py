@@ -244,7 +244,7 @@ def get_tools() -> list[types.Tool]:
         ),
         types.Tool(
             name="kotor_find_resource",
-            description="Use when you need the first match for a resref or to see all locations. Supports glob (e.g. 203tel*). Resolution order: Override → MOD → KEY/BIF. Read-only.",
+            description="Use when you need the first match for a resref or to see all locations. Supports glob (e.g. 203tel*). Resolution order: Override -> MOD -> KEY/BIF. Read-only.",
             inputSchema={
                 "type": "object",
                 "properties": {
