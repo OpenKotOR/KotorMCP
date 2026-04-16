@@ -14,6 +14,9 @@ for destructive tools and skip them for read-only tools.
 TOOL_ANNOTATIONS: dict[str, dict[str, bool]] = {
     "detectInstallations": {"readOnlyHint": True, "idempotentHint": True},
     "loadInstallation": {"readOnlyHint": True, "idempotentHint": True},
+    "openInstallation": {"readOnlyHint": True, "idempotentHint": True},
+    "getInstallationSnapshot": {"readOnlyHint": True, "idempotentHint": True},
+    "getInstallationGraph": {"readOnlyHint": True, "idempotentHint": True},
     "kotor_installation_info": {"readOnlyHint": True, "idempotentHint": True},
     "listResources": {"readOnlyHint": True, "idempotentHint": True},
     "describeResource": {"readOnlyHint": True, "idempotentHint": True},

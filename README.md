@@ -145,7 +145,7 @@ If environment variables are not set, the server will attempt to find installati
 
 ## Usage Guide
 
-The server provides five main tools for interacting with KOTOR installations:
+The server provides a growing set of installation and discovery tools for interacting with KOTOR installations:
 
 ### 1. `detectInstallations`
 
@@ -213,6 +213,102 @@ use_mcp_tool({
     path: "C:\\Program Files\\LucasArts\\SWKotOR"
   }
 })
+```
+
+### `openInstallation`
+
+Build or reuse a compacted in-memory installation snapshot and return a snapshot handle for follow-up queries.
+
+**Parameters:**
+
+- `game` (string, required): Game identifier (`"k1"`, `"k2"`, `"tsl"`, `"kotori"`, `"kotor2"`)
+- `path` (string, optional): Explicit installation path (overrides environment variables)
+- `refresh` (boolean, optional): Force the snapshot to rebuild instead of reusing the cached snapshot for the same game/path
+
+**Response:**
+
+```json
+{
+  "snapshotId": "2d6bf3f5108b4f498cb0d7147d6e31b9",
+  "cached": false,
+  "game": "K1",
+  "path": "C:\\Program Files\\LucasArts\\SWKotOR",
+  "policy": "default",
+  "resourceCount": 84217,
+  "omittedPayloadCount": 19042
+}
+```
+
+### `getInstallationSnapshot`
+
+Page through a snapshot handle returned by `openInstallation` and optionally include compacted per-resource documents.
+
+**Parameters:**
+
+- `snapshotId` (string, required): Snapshot handle returned by `openInstallation`
+- `resourceTypes` (array of strings, optional): Filter by resource type (for example `NSS`, `DLG`, `TLK`)
+- `resrefQuery` (string, optional): Filter by resref or filename substring
+- `sourceQuery` (string, optional): Filter by source or container path substring
+- `includeData` (boolean, optional): Return compacted per-resource documents instead of metadata-only summaries
+- `limit` (number, optional): Maximum number of results (default: 50)
+- `offset` (number, optional): Skip the first N filtered results (default: 0)
+
+**Response:**
+
+```json
+{
+  "snapshotId": "2d6bf3f5108b4f498cb0d7147d6e31b9",
+  "total": 1,
+  "offset": 0,
+  "limit": 50,
+  "nextOffset": null,
+  "includeData": true,
+  "items": [
+    {
+      "resource": "hello.nss",
+      "restype": "NSS",
+      "encoding": "text",
+      "data": "void main() {}\n"
+    }
+  ]
+}
+```
+
+### `getInstallationGraph`
+
+Page through canonical dependency edges extracted from a snapshot handle returned by `openInstallation`.
+
+**Parameters:**
+
+- `snapshotId` (string, required): Snapshot handle returned by `openInstallation`
+- `edgeKinds` (array of strings, optional): Filter by edge kind such as `script`, `conversation`, or `template_resref`
+- `targetTypes` (array of strings, optional): Filter by target resource type such as `NSS` or `DLG`
+- `query` (string, optional): Filter by target name, source resource, or field path substring
+- `sourceQuery` (string, optional): Filter by source document path or resource path substring
+- `limit` (number, optional): Maximum number of results (default: 50)
+- `offset` (number, optional): Skip the first N filtered results (default: 0)
+
+**Response:**
+
+```json
+{
+  "snapshotId": "2d6bf3f5108b4f498cb0d7147d6e31b9",
+  "total": 3,
+  "offset": 0,
+  "limit": 50,
+  "nextOffset": null,
+  "items": [
+    {
+      "sourceDocumentPath": "Override/fixture.utp.json",
+      "edgeKind": "script",
+      "targetName": "open_script",
+      "targetRestypes": ["NCS", "NSS"],
+      "targetResolved": true,
+      "targetDocumentPaths": ["Override/open_script.nss.json"],
+      "fieldPath": "OnOpen"
+    }
+  ]
+}
 ```
 
 ### 3. `listResources`

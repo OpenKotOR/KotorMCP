@@ -12,6 +12,65 @@ class LoadInstallationInput(BaseModel):
     path: str | None = Field(None, description="Optional absolute path to installation")
 
 
+class OpenInstallationInput(BaseModel):
+    """Input for openInstallation snapshot tool."""
+
+    game: str = Field(..., description="Game alias: k1, k2, or tsl")
+    path: str | None = Field(None, description="Optional absolute path to installation")
+    refresh: bool = Field(
+        default=False,
+        description="Rebuild the in-memory snapshot even if a cached snapshot already exists for this game/path.",
+    )
+
+
+class GetInstallationSnapshotInput(BaseModel):
+    """Input for getInstallationSnapshot tool."""
+
+    snapshotId: str = Field(..., description="Snapshot handle returned by openInstallation")  # noqa: N815
+    resourceTypes: list[str] | None = Field(  # noqa: N815
+        None,
+        description="Optional resource type filter (e.g. NSS, DLG, TLK, 2da)",
+    )
+    resrefQuery: str | None = Field(  # noqa: N815
+        None,
+        description="Case-insensitive substring filter for resource name or resref",
+    )
+    sourceQuery: str | None = Field(  # noqa: N815
+        None,
+        description="Case-insensitive substring filter for source/container paths",
+    )
+    includeData: bool = Field(  # noqa: N815
+        default=False,
+        description="Include compacted per-resource document payloads instead of metadata-only summaries",
+    )
+    limit: int = Field(default=50, ge=1, le=500, description="Max results per page")
+    offset: int = Field(default=0, ge=0, description="Skip first N results (pagination)")
+
+
+class GetInstallationGraphInput(BaseModel):
+    """Input for getInstallationGraph tool."""
+
+    snapshotId: str = Field(..., description="Snapshot handle returned by openInstallation")  # noqa: N815
+    edgeKinds: list[str] | None = Field(  # noqa: N815
+        None,
+        description="Optional edge kind filter (for example script, conversation, template_resref)",
+    )
+    targetTypes: list[str] | None = Field(  # noqa: N815
+        None,
+        description="Optional target resource type filter (for example NSS, DLG)",
+    )
+    query: str | None = Field(
+        None,
+        description="Case-insensitive substring filter for target name, source resource, or field path",
+    )
+    sourceQuery: str | None = Field(  # noqa: N815
+        None,
+        description="Case-insensitive substring filter for source document path or source resource path",
+    )
+    limit: int = Field(default=50, ge=1, le=500, description="Max results per page")
+    offset: int = Field(default=0, ge=0, description="Skip first N results (pagination)")
+
+
 class ListResourcesInput(BaseModel):
     """Input for listResources tool. Field names match MCP tool schema (camelCase)."""
 

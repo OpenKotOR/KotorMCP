@@ -36,12 +36,18 @@ def get_all_tools() -> list[types.Tool]:
     )
 
 
-async def handle_tool(name: str, arguments: dict[str, Any]) -> types.CallToolResult:
+async def handle_tool(name: str, arguments: dict[str, Any]) -> types.CallToolResult:  # noqa: PLR0911, PLR0912
     """Dispatch tool invocation to the correct handler."""
     if name == "detectInstallations":
         return await installation.handle_detect_installations(arguments)
     if name == "loadInstallation":
         return await installation.handle_load_installation(arguments)
+    if name == "openInstallation":
+        return await installation.handle_open_installation(arguments)
+    if name == "getInstallationSnapshot":
+        return await installation.handle_get_installation_snapshot(arguments)
+    if name == "getInstallationGraph":
+        return await installation.handle_get_installation_graph(arguments)
     if name == "kotor_installation_info":
         return await installation.handle_installation_info(arguments)
     if name == "listResources":

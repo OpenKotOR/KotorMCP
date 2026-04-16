@@ -51,7 +51,7 @@ async def list_resources() -> list[dict[str, Any]]:
 
     Returns static template URIs; clients request actual content via read_resource.
     """
-    templates = [
+    return [
         {
             "uri": "kotor://k1/resource/{resref}.{ext}",
             "name": "K1 Resource",
@@ -107,7 +107,6 @@ async def list_resources() -> list[dict[str, Any]]:
             "mimeType": "text/markdown",
         },
     ]
-    return templates
 
 
 def _get_capabilities_doc() -> str:
@@ -128,6 +127,8 @@ Use optional `source` on `kotor_extract_resource` (or `--source` on `pykotor get
 
 | Tool | Use when |
 |------|----------|
+| openInstallation | Build or reuse a compacted in-memory installation snapshot and get a snapshot handle |
+| getInstallationSnapshot | Page through a snapshot handle and optionally include compacted per-resource documents |
 | kotor_installation_info | Check game path, validity, module/override counts |
 | kotor_find_resource | Find files by resref/glob (e.g. `*.dlg`) before reading |
 | kotor_search_resources | Search by type/location with pagination |
